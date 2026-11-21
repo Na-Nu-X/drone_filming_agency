@@ -1,0 +1,90 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+html {
+  font-family: var(--font-body);
+  font-size: 100%;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin: 0 0 v.$space-4;
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+
+h1,
+.h1 {
+  font-size: clamp(2.4rem, 1.4rem + 4.2vw, 4.75rem);
+  letter-spacing: -0.035em;
+}
+
+h2,
+.h2 {
+  font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem);
+}
+
+h3,
+.h3 {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  letter-spacing: -0.015em;
+}
+
+h4 {
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0 0 v.$space-4;
+  text-wrap: pretty;
+}
+
+.lead {
+  font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
+  color: var(--color-text-muted);
+  max-width: 62ch;
+}
+
+.eyebrow {
+  @include m.eyebrow;
+  display: inline-flex;
+  align-items: center;
+  gap: v.$space-2;
+  color: var(--color-accent);
+  margin-bottom: v.$space-4;
+
+  &::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+  }
+}
+
+.mono,
+.telemetry {
+  @include m.telemetry;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-amber {
+  color: var(--color-amber);
+}

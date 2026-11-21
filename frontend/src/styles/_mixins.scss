@@ -1,0 +1,103 @@
+@use 'sass:map';
+@use 'variables' as v;
+
+/// Mobile-first media query: `@include up(md) { … }`
+@mixin up($bp) {
+  @media (min-width: map.get(v.$breakpoints, $bp)) {
+    @content;
+  }
+}
+
+/// Max-width query for the rare desktop-first override.
+@mixin down($bp) {
+  @media (max-width: (map.get(v.$breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin container($max: v.$container-max) {
+  width: 100%;
+  max-width: $max;
+  margin-inline: auto;
+  padding-inline: v.$space-4;
+
+  @include up(md) {
+    padding-inline: v.$space-6;
+  }
+}
+
+/// Elevated telemetry card surface.
+@mixin surface {
+  background: var(--color-surface);
+  border: var(--hairline);
+  border-radius: var(--radius-md);
+}
+
+/// Widescreen aerial framing.
+@mixin aspect-16-9 {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+/// Monospaced telemetry numerals (resolutions, altitudes, EUR).
+@mixin telemetry {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/// Small uppercase HUD label.
+@mixin eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/// HUD corner brackets drawn with gradients – no extra markup required.
+@mixin hud-corners($color: var(--color-accent), $size: 18px, $weight: 1.5px) {
+  background-image:
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color);
+  background-repeat: no-repeat;
+  background-size:
+    $size $weight, $weight $size, $size $weight, $weight $size,
+    $size $weight, $weight $size, $size $weight, $weight $size;
+  background-position:
+    top left, top left, top right, top right,
+    bottom left, bottom left, bottom right, bottom right;
+}
+
+/// Subtle telemetry grid background.
+@mixin hud-grid($opacity: 0.05, $size: 56px) {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, $opacity) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, $opacity) 1px, transparent 1px);
+  background-size: $size $size;
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}

@@ -1,0 +1,70 @@
+// =============================================================================
+// Design tokens — High-Altitude Cinema & Telemetry
+// SCSS values are the source of truth; they are exposed as CSS custom
+// properties in `_base.scss` so a client can be rebranded at runtime by
+// overriding `:root` variables only.
+// =============================================================================
+
+// --- Palette -----------------------------------------------------------------
+$color-obsidian: #080c12; // Deep Stratosphere Obsidian
+$color-slate: #101722; // Dark Telemetry Slate
+$color-slate-raised: #151e2b;
+$color-alabaster: #f8fafc; // Crisp Sky Alabaster
+$color-ink: #0f172a;
+$color-ink-muted: #475569;
+$color-cloud: #f1f5f9; // Crisp Cloud White
+$color-telemetry: #94a3b8;
+$color-telemetry-dim: #64748b;
+
+$color-cyan: #0ea5e9; // Horizon Sky Cyan
+$color-cyan-hover: #0284c7;
+$color-amber: #f59e0b; // FPV Amber
+$color-emerald: #10b981; // Airworthy Emerald
+$color-danger: #f43f5e;
+
+$hairline: 1px solid rgba(14, 165, 233, 0.16);
+$hairline-strong: 1px solid rgba(14, 165, 233, 0.32);
+$hairline-light: 1px solid rgba(15, 23, 42, 0.1);
+
+// --- Typography ----------------------------------------------------------------
+$font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+$font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+// --- Spacing scale (4px base) ------------------------------------------------------
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.5rem;
+$space-6: 2rem;
+$space-7: 3rem;
+$space-8: 4rem;
+$space-9: 6rem;
+$space-10: 8rem;
+
+// --- Radii, shadows, motion ------------------------------------------------------
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 14px;
+$radius-pill: 999px;
+
+$shadow-card: 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+$shadow-glow: 0 0 0 1px rgba(14, 165, 233, 0.4), 0 12px 40px -12px rgba(14, 165, 233, 0.45);
+
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$duration-fast: 160ms;
+$duration-base: 280ms;
+$duration-slow: 700ms;
+
+// --- Layout --------------------------------------------------------------------
+$container-max: 1280px;
+$container-narrow: 880px;
+$nav-height: 72px;
+
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+);

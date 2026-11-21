@@ -1,0 +1,140 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+// --- Runtime theme tokens (override these to rebrand) ------------------------
+:root {
+  color-scheme: dark;
+
+  --color-bg: #{v.$color-obsidian};
+  --color-surface: #{v.$color-slate};
+  --color-surface-raised: #{v.$color-slate-raised};
+  --color-light: #{v.$color-alabaster};
+  --color-ink: #{v.$color-ink};
+  --color-ink-muted: #{v.$color-ink-muted};
+  --color-text: #{v.$color-cloud};
+  --color-heading: #{v.$color-cloud};
+  --color-text-muted: #{v.$color-telemetry};
+  --color-text-dim: #{v.$color-telemetry-dim};
+  --color-accent: #{v.$color-cyan};
+  --color-accent-hover: #{v.$color-cyan-hover};
+  --color-amber: #{v.$color-amber};
+  --color-emerald: #{v.$color-emerald};
+  --color-danger: #{v.$color-danger};
+
+  --hairline: #{v.$hairline};
+  --hairline-strong: #{v.$hairline-strong};
+  --border-color: rgba(14, 165, 233, 0.16);
+
+  --font-display: #{v.$font-display};
+  --font-body: #{v.$font-body};
+  --font-mono: #{v.$font-mono};
+
+  --radius-sm: #{v.$radius-sm};
+  --radius-md: #{v.$radius-md};
+  --radius-lg: #{v.$radius-lg};
+
+  --nav-height: #{v.$nav-height};
+  --ease-out: #{v.$ease-out};
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 16px);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+
+  &.menu-open,
+  &.lightbox-open {
+    overflow: hidden;
+  }
+}
+
+img,
+video,
+iframe,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  @include m.focus-ring;
+}
+
+::selection {
+  background: rgba(14, 165, 233, 0.35);
+  color: #fff;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.visually-hidden {
+  @include m.visually-hidden;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: v.$space-4;
+  z-index: 1000;
+  padding: v.$space-2 v.$space-4;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+
+  &:focus {
+    top: v.$space-4;
+  }
+}
+
+@include m.reduced-motion {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
