@@ -1,0 +1,65 @@
+<header class="navbar" [class.is-solid]="scrolled() || menuOpen()">
+  <div class="navbar__inner container">
+    <a routerLink="/" class="wordmark" [attr.aria-label]="site.agencyName + ' – domov'">
+      <span class="wordmark__mark" aria-hidden="true">
+        <app-icon name="drone" />
+      </span>
+      <span class="wordmark__text">
+        {{ site.wordmark.primary }}<span class="wordmark__accent">{{ site.wordmark.accent }}</span>
+      </span>
+    </a>
+
+    <nav class="navbar__nav" aria-label="Hlavná navigácia">
+      <ul role="list">
+        @for (link of links; track link.label) {
+          <li>
+            @if (link.fragment) {
+              <a [routerLink]="link.path" [fragment]="link.fragment" class="nav-link">{{ link.label }}</a>
+            } @else {
+              <a [routerLink]="link.path" routerLinkActive="is-active" class="nav-link">{{ link.label }}</a>
+            }
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="navbar__actions">
+      <a routerLink="/dopyt" class="btn btn--primary btn--sm navbar__cta">Overiť termín a cenu</a>
+      <button
+        type="button"
+        class="navbar__toggle"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-drawer"
+        [attr.aria-label]="menuOpen() ? 'Zavrieť menu' : 'Otvoriť menu'"
+      >
+        <app-icon [name]="menuOpen() ? 'close' : 'menu'" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-drawer" class="drawer" [class.is-open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''">
+    <nav class="container" aria-label="Mobilná navigácia">
+      <ul role="list" class="drawer__list">
+        @for (link of links; track link.label; let i = $index) {
+          <li>
+            <a [routerLink]="link.path" [fragment]="link.fragment" class="drawer__link">
+              <span class="drawer__index mono">0{{ i + 1 }}</span>
+              {{ link.label }}
+              <app-icon name="arrow-right" />
+            </a>
+          </li>
+        }
+      </ul>
+      <a routerLink="/dopyt" class="btn btn--primary btn--block">Overiť termín a cenu</a>
+      <div class="drawer__contact">
+        <a [href]="phoneHref" class="mono">
+          <app-icon name="phone" /> {{ site.contact.chiefPilotPhone }}
+        </a>
+        <a [href]="'mailto:' + site.contact.bookingEmail" class="mono">
+          <app-icon name="mail" /> {{ site.contact.bookingEmail }}
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>

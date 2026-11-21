@@ -1,0 +1,28 @@
+<article class="card">
+  <div class="card__media">
+    <img [src]="project().thumbnail_url" [alt]="project().title" [attr.loading]="loading()" decoding="async" width="1600" height="900" />
+    <div class="card__shade" aria-hidden="true"></div>
+
+    <div class="card__badges">
+      <span class="badge">{{ project().category.name }}</span>
+      <span class="badge" [class.badge--amber]="isFpv()" [class.badge--accent]="!isFpv()">{{ droneBadge() }}</span>
+    </div>
+
+    @if (project().video_embed_url) {
+      <button type="button" class="card__play" (click)="playVideo()" [attr.aria-label]="'Prehrať video: ' + project().title">
+        <span class="card__play-ring"><app-icon name="play" /></span>
+      </button>
+    }
+
+    <span class="card__res mono" aria-hidden="true">{{ project().video_resolution }}</span>
+  </div>
+
+  <div class="card__body">
+    <span class="card__location"><app-icon name="pin" /> {{ project().location_name }}</span>
+    <h3 class="card__title">
+      <a [routerLink]="['/portfolio', project().slug]">{{ project().title }}</a>
+    </h3>
+    <p class="card__client">{{ project().client_name }}<span> · {{ project().client_sector }}</span></p>
+    <span class="link-arrow card__link" aria-hidden="true">Detail projektu <app-icon name="arrow-right" /></span>
+  </div>
+</article>

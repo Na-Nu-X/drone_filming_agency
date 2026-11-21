@@ -1,0 +1,115 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.lightbox {
+  width: min(1200px, calc(100vw - 2rem));
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  overflow: visible;
+
+  &::backdrop {
+    background: rgba(3, 6, 10, 0.88);
+    backdrop-filter: blur(8px);
+  }
+
+  &[open] {
+    animation: lightbox-in v.$duration-base v.$ease-out;
+  }
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+.lightbox__frame {
+  border: var(--hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.lightbox__header {
+  display: flex;
+  align-items: center;
+  gap: v.$space-4;
+  padding: v.$space-3 v.$space-3 v.$space-3 v.$space-5;
+  border-bottom: var(--hairline);
+}
+
+.lightbox__rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--color-amber);
+  letter-spacing: 0.14em;
+}
+
+.lightbox__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: blink 1.4s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.lightbox__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-body);
+  letter-spacing: 0;
+}
+
+.lightbox__close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 1.2rem;
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
+.lightbox__player {
+  @include m.aspect-16-9;
+  background: #000;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
+.lightbox__error {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0;
+  color: var(--color-text-muted);
+}

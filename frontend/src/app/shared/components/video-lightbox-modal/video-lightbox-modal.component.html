@@ -1,0 +1,32 @@
+<dialog
+  #dialog
+  class="lightbox"
+  aria-labelledby="lightbox-title"
+  (close)="close()"
+  (click)="onDialogClick($event)"
+>
+  @if (lightbox.current(); as video) {
+    <div class="lightbox__frame">
+      <header class="lightbox__header">
+        <span class="lightbox__rec mono" aria-hidden="true"><span class="lightbox__dot"></span> PLAY</span>
+        <h2 id="lightbox-title" class="lightbox__title">{{ video.title }}</h2>
+        <button type="button" class="lightbox__close" (click)="close()" aria-label="Zavrieť video" autofocus>
+          <app-icon name="close" />
+        </button>
+      </header>
+      <div class="lightbox__player">
+        @if (safeUrl(); as url) {
+          <iframe
+            [src]="url"
+            [title]="video.title"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        } @else {
+          <p class="lightbox__error">Video sa nepodarilo načítať. Skúste to prosím neskôr.</p>
+        }
+      </div>
+    </div>
+  }
+</dialog>

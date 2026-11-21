@@ -1,0 +1,79 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer__cta">
+      <div>
+        <p class="eyebrow">Pripravení na vzlet</p>
+        <h2 class="footer__cta-title">Overíme letovú zónu vašej lokality do 24 hodín.</h2>
+      </div>
+      <div class="footer__cta-actions">
+        <a routerLink="/dopyt" class="btn btn--primary">Overiť termín a cenu <app-icon name="arrow-right" /></a>
+        <a [href]="phoneHref" class="btn btn--ghost"><app-icon name="phone" /> {{ site.contact.chiefPilotPhone }}</a>
+      </div>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a routerLink="/" class="footer__wordmark">
+          {{ site.wordmark.primary }}<span>{{ site.wordmark.accent }}</span>
+        </a>
+        <p class="footer__tagline">{{ site.tagline }}</p>
+        <div class="footer__badges">
+          <span class="badge badge--emerald"><span class="status-dot"></span> Certifikovaný prevádzkovateľ</span>
+          <span class="badge badge--accent">EASA • Dopravný úrad SR</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="footer__heading">Štúdio</h3>
+        <address class="footer__list">
+          <span>{{ site.company.legalName }}</span>
+          <span>{{ site.contact.studioAddress.street }}</span>
+          <span>{{ site.contact.studioAddress.city }}, {{ site.contact.studioAddress.country }}</span>
+          <a [href]="phoneHref" class="mono">{{ site.contact.chiefPilotPhone }}</a>
+          <a [href]="'mailto:' + site.contact.bookingEmail">{{ site.contact.bookingEmail }}</a>
+        </address>
+      </div>
+
+      <nav aria-label="Rýchle odkazy">
+        <h3 class="footer__heading">Navigácia</h3>
+        <ul role="list" class="footer__list">
+          @for (link of quickLinks; track link.path) {
+            <li><a [routerLink]="link.path">{{ link.label }}</a></li>
+          }
+          <li><a routerLink="/" fragment="kalkulacka">Kalkulačka ceny</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h3 class="footer__heading">Bezpečnosť & legislatíva</h3>
+        <ul role="list" class="footer__list footer__compliance">
+          <li><app-icon name="shield" /> {{ site.compliance.operatorRegistration }}</li>
+          <li><app-icon name="award" /> <span>ID prevádzkovateľa: <span class="mono">{{ site.compliance.operatorId }}</span></span></li>
+          <li><app-icon name="check" /> {{ site.compliance.insurance }} {{ site.compliance.insuranceCoverage }}</li>
+        </ul>
+        <div class="footer__social">
+          @for (social of site.social; track social.url) {
+            <a [href]="social.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="social.label">
+              <app-icon [name]="social.icon" />
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__legal">
+      <p>
+        © {{ year }} {{ site.company.legalName }} · IČO: <span class="mono">{{ site.company.ico }}</span> · DIČ:
+        <span class="mono">{{ site.company.dic }}</span>
+        @if (site.company.icDph) {
+          · IČ DPH: <span class="mono">{{ site.company.icDph }}</span>
+        }
+      </p>
+      <p>{{ site.company.registryNote }}</p>
+      <p>
+        Osobné údaje odoslané cez formulár spracúvame výlučne na účel prípravy cenovej ponuky v súlade s nariadením
+        GDPR (EÚ) 2016/679 a zákonom č. 18/2018 Z. z. o ochrane osobných údajov.
+      </p>
+    </div>
+  </div>
+</footer>

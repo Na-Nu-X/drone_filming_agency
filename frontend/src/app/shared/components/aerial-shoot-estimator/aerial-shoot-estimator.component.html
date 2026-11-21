@@ -1,0 +1,76 @@
+<div class="estimator">
+  <form class="estimator__controls" (submit)="$event.preventDefault()" aria-label="Konfigurácia natáčania">
+    @for (group of groups; track group.key) {
+      <fieldset class="group">
+        <legend class="group__legend">
+          <span class="group__step mono">{{ group.step }}</span>
+          {{ group.legend }}
+        </legend>
+        <div class="group__options" [class.group__options--two]="group.options.length === 2" [class.group__options--four]="group.options.length === 4">
+          @for (option of group.options; track option.value) {
+            <label class="tile" [class.is-selected]="isSelected(group.key, option.value)">
+              <input
+                type="radio"
+                class="visually-hidden"
+                [name]="'est-' + group.key"
+                [value]="option.value"
+                [checked]="isSelected(group.key, option.value)"
+                (change)="select(group.key, option.value)"
+              />
+              <span class="tile__indicator" aria-hidden="true"></span>
+              <span class="tile__label">{{ option.label }}</span>
+              <span class="tile__hint">{{ option.hint }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+    }
+  </form>
+
+  <aside class="readout" aria-live="polite" aria-label="Výsledok kalkulácie">
+    <div class="readout__head">
+      <span class="readout__label mono">Orientačná cena</span>
+      <span class="readout__vat mono">bez DPH</span>
+    </div>
+    <p class="readout__price mono">
+      {{ formatEur(estimate().priceFrom) }}<span class="readout__dash"> – </span>{{ formatEur(estimate().priceTo) }}
+    </p>
+
+    <dl class="readout__specs">
+      <div class="spec">
+        <dt><app-icon name="drone" /> Odporúčaná platforma</dt>
+        <dd>
+          <strong>{{ estimate().platform }}</strong>
+          <span>{{ estimate().platformNote }}</span>
+        </dd>
+      </div>
+      <div class="spec" [attr.data-readiness]="estimate().readiness">
+        <dt><app-icon [name]="readinessIcon()" /> Príprava letovej zóny</dt>
+        <dd>
+          <strong class="readiness">{{ estimate().leadTime }}</strong>
+          <span>{{ estimate().leadTimeNote }}</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt><app-icon name="layers" /> Posádka</dt>
+        <dd><strong>{{ estimate().crew }}</strong></dd>
+      </div>
+    </dl>
+
+    <ul role="list" class="readout__breakdown">
+      @for (line of estimate().breakdown; track line.label) {
+        <li>
+          <span>{{ line.label }}</span>
+          <span class="mono">{{ line.amount > 0 ? formatEur(line.amount) : 'v cene' }}</span>
+        </li>
+      }
+    </ul>
+
+    <button type="button" class="btn btn--primary btn--block" (click)="sendQuote()">
+      Odoslať dopyt s touto konfiguráciou <app-icon name="arrow-right" />
+    </button>
+    <p class="readout__note">
+      Kalkulácia je orientačná. Presnú ponuku pripravíme po overení lokality a letovej zóny – zvyčajne do 24 hodín.
+    </p>
+  </aside>
+</div>
