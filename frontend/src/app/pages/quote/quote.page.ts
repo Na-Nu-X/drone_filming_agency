@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, Injector, afterNextRender, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -52,6 +53,8 @@ export class QuotePage {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private readonly document = inject(DOCUMENT);
 
   protected readonly site = SITE_CONFIG;
   protected readonly phoneHref = telHref(SITE_CONFIG.contact.chiefPilotPhone);
@@ -161,7 +164,7 @@ export class QuotePage {
           this.submittedName.set(payload.contact_name.split(' ')[0]);
           this.submitState.set('success');
           this.form.reset();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          this.document.defaultView?.scrollTo({ top: 0, behavior: 'smooth' });
         },
         error: (err: unknown) => {
           if (err instanceof HttpErrorResponse && err.status === 400 && err.error && typeof err.error === 'object') {
@@ -185,8 +188,14 @@ export class QuotePage {
   }
 
   private focusFirstInvalid(): void {
-    queueMicrotask(() => {
-      document.querySelector<HTMLElement>('.quote-form .is-invalid, .quote-form [aria-invalid="true"]')?.focus();
-    });
+    // Wait until the error state has been rendered before moving focus.
+    afterNextRender(
+      () => {
+        const target = this.document.querySelector<HTMLElement>('.quote-form [aria-invalid="true"]');
+        target?.focus();
+        target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      },
+      { injector: this.injector },
+    );
   }
 }

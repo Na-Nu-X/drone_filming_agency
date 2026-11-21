@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Injector, afterNextRender, effect, inject, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -31,6 +32,7 @@ export class ServicesFleetPage {
 
   private readonly fragment = toSignal(inject(ActivatedRoute).fragment);
   private readonly injector = inject(Injector);
+  private readonly document = inject(DOCUMENT);
 
   constructor() {
     // Content arrives asynchronously, so re-apply fragment scrolling once loaded.
@@ -40,7 +42,7 @@ export class ServicesFleetPage {
         return;
       }
       untracked(() =>
-        afterNextRender(() => document.getElementById(fragment)?.scrollIntoView({ block: 'start' }), {
+        afterNextRender(() => this.document.getElementById(fragment)?.scrollIntoView({ block: 'start' }), {
           injector: this.injector,
         }),
       );

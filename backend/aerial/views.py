@@ -28,7 +28,7 @@ class AerialCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = AerialCategory.objects.annotate(
         project_count=Count("projects", distinct=True),
         service_count=Count("services", distinct=True),
-    )
+    ).order_by("display_order", "name")  # Meta.ordering is ignored for aggregate queries
 
 
 class AerialProjectViewSet(viewsets.ReadOnlyModelViewSet):

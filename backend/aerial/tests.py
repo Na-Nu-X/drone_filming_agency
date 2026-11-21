@@ -57,3 +57,7 @@ class ApiSmokeTests(TestCase):
 
     def test_quote_endpoint_is_write_only(self):
         self.assertEqual(self.client.get("/api/quotes/").status_code, 405)
+
+    def test_categories_respect_display_order(self):
+        orders = [c["display_order"] for c in self.client.get("/api/categories/").json()]
+        self.assertEqual(orders, sorted(orders))

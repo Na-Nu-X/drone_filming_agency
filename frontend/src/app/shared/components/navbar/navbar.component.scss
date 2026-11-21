@@ -129,8 +129,11 @@
 }
 
 // --- Mobile drawer ---------------------------------------------------------------
+// Rendered as a sibling of the header: the header's backdrop-filter would
+// otherwise become the containing block for this fixed-position element.
 .drawer {
   position: fixed;
+  z-index: 99;
   inset: var(--nav-height) 0 0;
   background: var(--color-bg);
   @include m.hud-grid(0.04);

@@ -7,6 +7,7 @@
 
 .estimator {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: v.$space-6;
 
   @include m.up(lg) {
@@ -66,10 +67,6 @@
   &--four {
     @include m.up(sm) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @include m.up(xl) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 }

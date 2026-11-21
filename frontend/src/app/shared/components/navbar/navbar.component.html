@@ -38,28 +38,29 @@
     </div>
   </div>
 
-  <div id="mobile-drawer" class="drawer" [class.is-open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''">
-    <nav class="container" aria-label="Mobilná navigácia">
-      <ul role="list" class="drawer__list">
-        @for (link of links; track link.label; let i = $index) {
-          <li>
-            <a [routerLink]="link.path" [fragment]="link.fragment" class="drawer__link">
-              <span class="drawer__index mono">0{{ i + 1 }}</span>
-              {{ link.label }}
-              <app-icon name="arrow-right" />
-            </a>
-          </li>
-        }
-      </ul>
-      <a routerLink="/dopyt" class="btn btn--primary btn--block">Overiť termín a cenu</a>
-      <div class="drawer__contact">
-        <a [href]="phoneHref" class="mono">
-          <app-icon name="phone" /> {{ site.contact.chiefPilotPhone }}
-        </a>
-        <a [href]="'mailto:' + site.contact.bookingEmail" class="mono">
-          <app-icon name="mail" /> {{ site.contact.bookingEmail }}
-        </a>
-      </div>
-    </nav>
-  </div>
 </header>
+
+<div id="mobile-drawer" class="drawer" [class.is-open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''">
+  <nav class="container" aria-label="Mobilná navigácia">
+    <ul role="list" class="drawer__list">
+      @for (link of links; track link.label; let i = $index) {
+        <li>
+          <a [routerLink]="link.path" [fragment]="link.fragment" class="drawer__link">
+            <span class="drawer__index mono">0{{ i + 1 }}</span>
+            {{ link.label }}
+            <app-icon name="arrow-right" />
+          </a>
+        </li>
+      }
+    </ul>
+    <a routerLink="/dopyt" class="btn btn--primary btn--block">Overiť termín a cenu</a>
+    <div class="drawer__contact">
+      <a [href]="phoneHref" class="mono">
+        <app-icon name="phone" /> {{ site.contact.chiefPilotPhone }}
+      </a>
+      <a [href]="'mailto:' + site.contact.bookingEmail" class="mono">
+        <app-icon name="mail" /> {{ site.contact.bookingEmail }}
+      </a>
+    </div>
+  </nav>
+</div>

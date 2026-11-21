@@ -200,7 +200,7 @@ PROJECTS = [
             "odstránili krehké predmety a pripravili svetelný plán. Nehnuteľnosť sa predala do 3 týždňov."
         ),
         "deliverables_tags": ["4K Master", "Verzia pre portály 16:9", "9:16 Reels verzie", "Fotografie 20 MP"],
-        "is_featured": False,
+        "is_featured": True,
         "display_order": 6,
     },
     {
