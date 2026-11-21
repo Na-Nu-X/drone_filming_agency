@@ -1,0 +1,266 @@
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Nezáväzná ponuka & Overenie lokácie</p>
+    <h1>Pošlite nám lokalitu, my overíme letovú zónu</h1>
+    <p class="lead">
+      Vyplnenie trvá 2 minúty. Do 24 hodín vám pošleme cenovú ponuku, odporúčaný dron a informáciu, aké povolenia
+      bude let vyžadovať.
+    </p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container quote-layout">
+    <div class="quote-main">
+      @if (submitState() === 'success') {
+        <div class="success" role="status">
+          <span class="success__icon"><app-icon name="check" /></span>
+          <h2>Ďakujeme{{ submittedName() ? ', ' + submittedName() : '' }}! Dopyt sme prijali.</h2>
+          <p>
+            Šéfpilot teraz overí vašu lokalitu v mape UAS zón a do 24 hodín sa vám ozve s cenovou ponukou a návrhom
+            termínu. Ak je projekt urgentný, zavolajte nám priamo na
+            <a [href]="phoneHref" class="mono">{{ site.contact.chiefPilotPhone }}</a>.
+          </p>
+          <div class="success__actions">
+            <a routerLink="/portfolio" class="btn btn--primary">Pozrieť portfólio</a>
+            <button type="button" class="btn" (click)="newRequest()">Odoslať ďalší dopyt</button>
+          </div>
+        </div>
+      } @else {
+        <form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          @if (prefilledFrom(); as source) {
+            <p class="prefill-note"><app-icon name="layers" /> Formulár sme predvyplnili podľa {{ source === 'kalkulačky ceny' ? source : 'projektu „' + source + '“' }}. Údaje môžete upraviť.</p>
+          }
+
+          <!-- Step 1: flight configuration -->
+          <fieldset class="form-step">
+            <legend class="form-step__legend"><span class="mono">01</span> Konfigurácia natáčania</legend>
+
+            <div class="field">
+              <span class="field__label" id="style-label">Štýl záberov</span>
+              <div class="choice-grid choice-grid--4" role="radiogroup" aria-labelledby="style-label">
+                @for (option of styleOptions; track option.value) {
+                  <label class="choice" [class.is-selected]="form.controls.drone_style.value === option.value">
+                    <input type="radio" class="visually-hidden" formControlName="drone_style" [value]="option.value" />
+                    <strong>{{ option.label }}</strong>
+                    <span>{{ option.hint }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label" id="duration-label">Rozsah natáčania</span>
+              <div class="choice-grid" role="radiogroup" aria-labelledby="duration-label">
+                @for (option of durationOptions; track option.value) {
+                  <label class="choice" [class.is-selected]="form.controls.duration_tier.value === option.value">
+                    <input type="radio" class="visually-hidden" formControlName="duration_tier" [value]="option.value" />
+                    <strong>{{ option.label }}</strong>
+                    <span>{{ option.hint }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label" id="env-label">Prostredie / letová zóna</span>
+              <div class="choice-grid" role="radiogroup" aria-labelledby="env-label">
+                @for (option of environmentOptions; track option.value) {
+                  <label class="choice" [class.is-selected]="form.controls.location_environment.value === option.value">
+                    <input type="radio" class="visually-hidden" formControlName="location_environment" [value]="option.value" />
+                    <strong>{{ option.label }}</strong>
+                    <span>{{ option.hint }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <label class="switch">
+              <input type="checkbox" formControlName="post_production_needed" />
+              <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+              <span class="switch__text">
+                <strong>Chcem kompletnú postprodukciu</strong>
+                <span>Zostrih, color grading, hudba a verzie pre sociálne siete. Bez zaškrtnutia dodáme surové zábery (RAW / D-Log).</span>
+              </span>
+            </label>
+          </fieldset>
+
+          <!-- Step 2: location -->
+          <fieldset class="form-step">
+            <legend class="form-step__legend"><span class="mono">02</span> Lokalita a termín</legend>
+            <div class="form-row">
+              <div class="field field--wide">
+                <label for="shoot_location">Presné miesto natáčania *</label>
+                <input
+                  id="shoot_location"
+                  class="input"
+                  formControlName="shoot_location"
+                  placeholder="napr. Eurovea, Bratislava alebo 48.1404, 17.1225"
+                  autocomplete="street-address"
+                  [class.is-invalid]="errorFor('shoot_location')"
+                  [attr.aria-invalid]="!!errorFor('shoot_location')"
+                  aria-describedby="shoot_location-hint shoot_location-error"
+                  (input)="clearServerError('shoot_location')"
+                />
+                <span id="shoot_location-hint" class="field__hint">Podľa lokality overíme UAS zóny, CTR letísk a potrebné povolenia.</span>
+                @if (errorFor('shoot_location'); as error) {
+                  <span id="shoot_location-error" class="field__error">{{ error }}</span>
+                }
+              </div>
+              <div class="field">
+                <label for="preferred_date">Preferovaný termín</label>
+                <input id="preferred_date" class="input" formControlName="preferred_date" placeholder="napr. 2. polovica júna, flexibilne" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 3: contact -->
+          <fieldset class="form-step">
+            <legend class="form-step__legend"><span class="mono">03</span> Kontakt a detaily projektu</legend>
+            <div class="form-row">
+              <div class="field">
+                <label for="contact_name">Meno a priezvisko *</label>
+                <input
+                  id="contact_name"
+                  class="input"
+                  formControlName="contact_name"
+                  autocomplete="name"
+                  [class.is-invalid]="errorFor('contact_name')"
+                  [attr.aria-invalid]="!!errorFor('contact_name')"
+                  aria-describedby="contact_name-error"
+                  (input)="clearServerError('contact_name')"
+                />
+                @if (errorFor('contact_name'); as error) {
+                  <span id="contact_name-error" class="field__error">{{ error }}</span>
+                }
+              </div>
+              <div class="field">
+                <label for="company_name">Spoločnosť</label>
+                <input id="company_name" class="input" formControlName="company_name" autocomplete="organization" />
+              </div>
+              <div class="field">
+                <label for="email">E-mail *</label>
+                <input
+                  id="email"
+                  type="email"
+                  class="input"
+                  formControlName="email"
+                  autocomplete="email"
+                  [class.is-invalid]="errorFor('email')"
+                  [attr.aria-invalid]="!!errorFor('email')"
+                  aria-describedby="email-error"
+                  (input)="clearServerError('email')"
+                />
+                @if (errorFor('email'); as error) {
+                  <span id="email-error" class="field__error">{{ error }}</span>
+                }
+              </div>
+              <div class="field">
+                <label for="phone">Telefón *</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  class="input"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  placeholder="+421 900 123 456"
+                  [class.is-invalid]="errorFor('phone')"
+                  [attr.aria-invalid]="!!errorFor('phone')"
+                  aria-describedby="phone-error"
+                  (input)="clearServerError('phone')"
+                />
+                @if (errorFor('phone'); as error) {
+                  <span id="phone-error" class="field__error">{{ error }}</span>
+                }
+              </div>
+              <div class="field field--wide">
+                <label for="project_details">Popis projektu *</label>
+                <textarea
+                  id="project_details"
+                  class="input"
+                  formControlName="project_details"
+                  rows="6"
+                  placeholder="Čo chcete natočiť, na aký účel (reklama, web, sociálne siete, inšpekcia) a aký výstup potrebujete?"
+                  [class.is-invalid]="errorFor('project_details')"
+                  [attr.aria-invalid]="!!errorFor('project_details')"
+                  aria-describedby="project_details-error"
+                  (input)="clearServerError('project_details')"
+                ></textarea>
+                @if (errorFor('project_details'); as error) {
+                  <span id="project_details-error" class="field__error">{{ error }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Honeypot (hidden from humans) -->
+            <div class="hp" aria-hidden="true">
+              <label for="website">Web</label>
+              <input id="website" formControlName="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <label class="consent" [class.is-invalid]="errorFor('gdpr')">
+              <input type="checkbox" formControlName="gdpr" [attr.aria-invalid]="!!errorFor('gdpr')" />
+              <span>
+                Súhlasím so spracovaním osobných údajov na účel prípravy cenovej ponuky v súlade s GDPR. Údaje
+                nezdieľame s tretími stranami.
+              </span>
+            </label>
+            @if (errorFor('gdpr'); as error) {
+              <span class="field__error">{{ error }}</span>
+            }
+          </fieldset>
+
+          @if (submitState() === 'error') {
+            <p class="form-alert" role="alert">
+              Dopyt sa nepodarilo odoslať. Skontrolujte pripojenie a skúste to znova, alebo nám napíšte na
+              <a [href]="'mailto:' + site.contact.bookingEmail">{{ site.contact.bookingEmail }}</a>.
+            </p>
+          }
+          @if (serverErrors()['non_field_errors'] || serverErrors()['detail']; as general) {
+            <p class="form-alert" role="alert">{{ general }}</p>
+          }
+
+          <button type="submit" class="btn btn--primary btn--block submit" [disabled]="submitState() === 'submitting'">
+            @if (submitState() === 'submitting') {
+              <span class="spinner" aria-hidden="true"></span> Odosielam dopyt…
+            } @else {
+              Odoslať nezáväzný dopyt <app-icon name="arrow-right" />
+            }
+          </button>
+          <p class="submit-note">Odpovieme do 24 hodín v pracovné dni. Odoslanie vás k ničomu nezaväzuje.</p>
+        </form>
+      }
+    </div>
+
+    <aside class="quote-aside">
+      <div class="estimate-card" aria-live="polite">
+        <span class="estimate-card__label mono">Orientačný odhad</span>
+        <p class="estimate-card__price mono">{{ formatEur(estimate().priceFrom) }} – {{ formatEur(estimate().priceTo) }}</p>
+        <dl>
+          <div><dt>Dron</dt><dd>{{ estimate().platform }}</dd></div>
+          <div [attr.data-readiness]="estimate().readiness"><dt>Príprava</dt><dd class="readiness">{{ estimate().leadTime }}</dd></div>
+          <div><dt>Posádka</dt><dd>{{ estimate().crew }}</dd></div>
+        </dl>
+        <p class="estimate-card__note">Cena bez DPH. Finálnu ponuku spresníme po overení lokality.</p>
+      </div>
+
+      <div class="contact-card">
+        <h2 class="contact-card__title">Radšej telefonicky?</h2>
+        <p class="text-muted">{{ site.contact.chiefPilotName }}, šéfpilot</p>
+        <ul role="list">
+          <li><app-icon name="phone" /><a [href]="phoneHref" class="mono">{{ site.contact.chiefPilotPhone }}</a></li>
+          <li><app-icon name="mail" /><a [href]="'mailto:' + site.contact.bookingEmail">{{ site.contact.bookingEmail }}</a></li>
+          <li>
+            <app-icon name="pin" />
+            <span>{{ site.contact.studioAddress.street }}, {{ site.contact.studioAddress.city }}</span>
+          </li>
+          <li><app-icon name="clock" /><span>{{ site.contact.openingHours }}</span></li>
+        </ul>
+        <div class="contact-card__badges">
+          <span class="badge badge--emerald"><span class="status-dot"></span> Dopravný úrad SR</span>
+          <span class="badge badge--emerald">Poistenie {{ site.compliance.insuranceCoverage }}</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

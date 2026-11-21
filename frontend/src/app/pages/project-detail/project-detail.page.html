@@ -1,0 +1,124 @@
+@switch (state().status) {
+  @case ('loading') {
+    <div class="container detail-loading">
+      <div class="skeleton" style="height: 2rem; width: 40%"></div>
+      <div class="skeleton" style="height: 3.5rem; width: 80%"></div>
+      <div class="skeleton player-skeleton"></div>
+    </div>
+  }
+  @case ('not-found') {
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">404 · Projekt nenájdený</p>
+        <h1>Tento letecký projekt neexistuje</h1>
+        <p class="lead">Možno bol presunutý alebo ste zadali nesprávnu adresu.</p>
+        <a routerLink="/portfolio" class="btn btn--primary">Späť na portfólio</a>
+      </div>
+    </section>
+  }
+  @case ('error') {
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">Chyba spojenia</p>
+        <h1>Projekt sa nepodarilo načítať</h1>
+        <p class="lead">Server je momentálne nedostupný. Skúste to prosím znova.</p>
+        <button type="button" class="btn btn--primary" (click)="retry()">Skúsiť znova</button>
+      </div>
+    </section>
+  }
+}
+
+@if (project(); as p) {
+  <article>
+    <header class="detail-hero">
+      <div class="container">
+        <nav class="breadcrumbs mono" aria-label="Omrvinková navigácia">
+          <a routerLink="/portfolio">Portfólio</a>
+          <span aria-hidden="true">/</span>
+          <a routerLink="/portfolio" [queryParams]="{ kategoria: p.category.slug }">{{ p.category.name }}</a>
+        </nav>
+        <p class="eyebrow">Flight Dossier · {{ p.client_sector }}</p>
+        <h1 class="detail-title">{{ p.title }}</h1>
+        <p class="detail-client">Klient: <strong>{{ p.client_name }}</strong></p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="player">
+        @if (embedUrl(); as url) {
+          <iframe
+            [src]="url"
+            [title]="'Video: ' + p.title"
+            loading="lazy"
+            allow="fullscreen; picture-in-picture; encrypted-media"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        } @else {
+          <img [src]="p.thumbnail_url" [alt]="p.title" />
+        }
+      </div>
+
+      <dl class="telemetry-bar">
+        <div class="telemetry-item">
+          <dt><app-icon name="drone" /> Dron a snímač</dt>
+          <dd>{{ p.drone_platform }}</dd>
+        </div>
+        <div class="telemetry-item">
+          <dt><app-icon name="aperture" /> Rozlíšenie videa</dt>
+          <dd class="mono">{{ p.video_resolution }}</dd>
+        </div>
+        <div class="telemetry-item">
+          <dt><app-icon name="pin" /> Lokalita</dt>
+          <dd>{{ p.location_name }}</dd>
+        </div>
+        <div class="telemetry-item telemetry-item--clearance">
+          <dt><app-icon name="shield" /> Letová zóna / povolenia</dt>
+          <dd>{{ p.airspace_clearance || 'Štandardná prevádzka v otvorenej kategórii' }}</dd>
+        </div>
+      </dl>
+
+      <div class="detail-body">
+        <section class="detail-story" aria-labelledby="story-title">
+          <h2 id="story-title" class="h3">Priebeh natáčania &amp; výzva</h2>
+          <p>{{ p.shoot_summary }}</p>
+        </section>
+
+        <aside class="detail-aside">
+          <section class="deliverables" aria-labelledby="deliverables-title">
+            <h2 id="deliverables-title" class="deliverables__title">Dodané formáty</h2>
+            <ul role="list">
+              @for (tag of p.deliverables_tags; track tag) {
+                <li><app-icon name="check" /> {{ tag }}</li>
+              }
+            </ul>
+          </section>
+          <div class="cta-box">
+            <p>Plánujete podobný projekt? Pošlite nám lokalitu – overíme letovú zónu a pripravíme ponuku.</p>
+            <a routerLink="/dopyt" [queryParams]="similarQuery()" class="btn btn--primary btn--block">
+              Chcem podobné zábery pre náš projekt <app-icon name="arrow-right" />
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    @if (related().length) {
+      <section class="section related" aria-labelledby="related-title">
+        <div class="container">
+          <header class="section-header">
+            <div>
+              <p class="eyebrow">Podobné projekty</p>
+              <h2 id="related-title" class="h3">Ďalšie zábery z kategórie {{ p.category.name }}</h2>
+            </div>
+          </header>
+          <div class="grid grid--3">
+            @for (item of related(); track item.id) {
+              <app-aerial-project-card [project]="item" />
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </article>
+}

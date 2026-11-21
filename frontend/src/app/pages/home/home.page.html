@@ -1,0 +1,203 @@
+<!-- ============ HERO ============ -->
+<section class="hero" aria-labelledby="hero-title">
+  <img class="hero__bg" [src]="site.heroImageUrl" alt="" fetchpriority="high" />
+  <div class="hero__shade" aria-hidden="true"></div>
+
+  <div class="hero__hud" aria-hidden="true">
+    <div class="hud-frame"></div>
+    <div class="hud-crosshair"></div>
+    <ul class="hud-readout hud-readout--left mono">
+      <li><span>ALT</span> 120 m AGL</li>
+      <li><span>SPD</span> 14.2 m/s</li>
+      <li><span>HDG</span> 284°</li>
+    </ul>
+    <ul class="hud-readout hud-readout--right mono">
+      <li class="hud-rec"><span class="status-dot"></span> REC</li>
+      <li>8K · 25p · D-LOG</li>
+      <li><span>BAT</span> 87 %</li>
+    </ul>
+  </div>
+
+  <div class="hero__content container">
+    <p class="badge badge--emerald hero__status">
+      <span class="status-dot"></span> Certifikovaný prevádzkovateľ UAS · EASA · Dopravný úrad SR
+    </p>
+    <h1 id="hero-title" class="hero__title">{{ site.heroTitle }}</h1>
+    <p class="lead hero__lead">{{ site.heroSubtitle }}</p>
+    <div class="hero__actions">
+      <a routerLink="/dopyt" class="btn btn--primary">Overiť termín a cenu <app-icon name="arrow-right" /></a>
+      <button type="button" class="btn btn--ghost" (click)="playShowreel()">
+        <app-icon name="play" /> Prehrať showreel
+      </button>
+    </div>
+  </div>
+
+  <div class="hero__metrics">
+    <dl class="container metrics">
+      @for (metric of site.trustMetrics; track metric.label) {
+        <div class="metric">
+          <dt>{{ metric.label }}</dt>
+          <dd class="mono">{{ metric.value }}</dd>
+        </div>
+      }
+    </dl>
+  </div>
+</section>
+
+<!-- ============ FEATURED PROJECTS ============ -->
+<section class="section" aria-labelledby="featured-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Portfólio</p>
+        <h2 id="featured-title">Vybrané letecké projekty</h2>
+      </div>
+      <div class="section-header__aside">
+        <p>Reklamné kampane, FPV prelety bez strihu, prémiové reality aj termovízne inšpekcie – zábery, ktoré klientom priniesli merateľný výsledok.</p>
+        <a routerLink="/portfolio" class="link-arrow">Celé portfólio <app-icon name="arrow-right" /></a>
+      </div>
+    </header>
+
+    @switch (projects.status()) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton skeleton--card"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Projekty sa nepodarilo načítať.</strong>
+          Skontrolujte pripojenie alebo to skúste o chvíľu znova.
+          <div><button type="button" class="btn btn--sm" (click)="projects.reload()">Skúsiť znova</button></div>
+        </div>
+      }
+      @default {
+        <div class="grid grid--3">
+          @for (project of projects.data(); track project.id; let first = $first) {
+            <app-aerial-project-card [project]="project" [loading]="first ? 'eager' : 'lazy'" />
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="section section--light" aria-labelledby="services-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Služby</p>
+        <h2 id="services-title">Naše služby zo vzduchu</h2>
+      </div>
+      <div class="section-header__aside">
+        <p>Od 8K reklamných záberov cez dynamické FPV až po radiometrickú termovíziu a RTK mapovanie. Jedna posádka, kompletná príprava letu.</p>
+        <a routerLink="/sluzby-a-flotila" class="link-arrow">Služby a flotila dronov <app-icon name="arrow-right" /></a>
+      </div>
+    </header>
+
+    @switch (services.status()) {
+      @case ('loading') {
+        <div class="services-grid">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div class="skeleton skeleton--service"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Služby sa nepodarilo načítať.</strong>
+          <button type="button" class="btn btn--sm" (click)="services.reload()">Skúsiť znova</button>
+        </div>
+      }
+      @default {
+        <ul role="list" class="services-grid">
+          @for (service of services.data(); track service.id; let i = $index) {
+            <li class="service-tile">
+              <div class="service-tile__top">
+                <span class="service-tile__icon"><app-icon [name]="toIconName(service.category.icon_name)" /></span>
+                <span class="service-tile__index mono">0{{ i + 1 }}</span>
+              </div>
+              <h3 class="service-tile__title">{{ service.title }}</h3>
+              <p class="service-tile__text">{{ service.short_description }}</p>
+              <dl class="service-tile__meta">
+                @if (formatPrice(service.starting_price_eur); as price) {
+                  <div><dt>Cena od</dt><dd class="mono">{{ price }}</dd></div>
+                }
+                <div><dt>Dodanie</dt><dd class="mono">{{ service.typical_turnaround }}</dd></div>
+              </dl>
+              <a [routerLink]="'/sluzby-a-flotila'" [fragment]="service.slug" class="service-tile__link" [attr.aria-label]="'Viac o službe ' + service.title"></a>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+</section>
+
+<!-- ============ ESTIMATOR ============ -->
+<section id="kalkulacka" class="section estimator-section" aria-labelledby="estimator-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Kalkulačka ceny</p>
+        <h2 id="estimator-title">Nakonfigurujte si natáčanie za 30 sekúnd</h2>
+      </div>
+      <p>Vyberte štýl záberov, rozsah a prostredie. Okamžite uvidíte orientačnú cenu, odporúčaný dron a čas potrebný na prípravu letovej zóny.</p>
+    </header>
+    <app-aerial-shoot-estimator />
+  </div>
+</section>
+
+<!-- ============ TRUST PILLARS ============ -->
+<section class="section section--surface" aria-labelledby="trust-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Bezpečnosť</p>
+        <h2 id="trust-title">Legálne a bezpečné lietanie</h2>
+      </div>
+      <div class="section-header__aside">
+        <p>Bezpečnosť nie je doplnok, ale súčasť každého záberu. Pred letom overujeme letové zóny, počasie, NOTAM aj riziká na mieste.</p>
+        <a routerLink="/legislativa-a-tim" class="link-arrow">Legislatíva a náš tím <app-icon name="arrow-right" /></a>
+      </div>
+    </header>
+
+    <ul role="list" class="pillars">
+      @for (pillar of pillars; track pillar.title) {
+        <li class="pillar">
+          <span class="pillar__icon"><app-icon [name]="pillar.icon" /></span>
+          <h3 class="pillar__title">{{ pillar.title }}</h3>
+          <p class="pillar__text">{{ pillar.text }}</p>
+          <span class="pillar__meta mono">{{ pillar.meta }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section" aria-labelledby="reviews-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Referencie</p>
+        <h2 id="reviews-title">Čo hovoria naši klienti</h2>
+      </div>
+    </header>
+    <div class="reviews">
+      @for (review of site.testimonials; track review.author) {
+        <figure class="review">
+          <span class="review__mark" aria-hidden="true">“</span>
+          <blockquote>{{ review.quote }}</blockquote>
+          <figcaption>
+            <strong>{{ review.author }}</strong>
+            <span>{{ review.role }}, {{ review.company }}</span>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>

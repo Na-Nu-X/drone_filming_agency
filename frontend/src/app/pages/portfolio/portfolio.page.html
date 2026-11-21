@@ -1,0 +1,75 @@
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Aerial Showcase</p>
+    <h1>Portfólio leteckých projektov</h1>
+    <p class="lead">
+      Vyberte si kategóriu a pozrite si video priamo na stránke. Pri každom projekte nájdete použitý dron, rozlíšenie
+      a povolenia, ktoré sme pre let zabezpečili.
+    </p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="toolbar">
+      <div class="filters" role="group" aria-label="Filtrovať podľa kategórie">
+        @for (tab of tabs(); track tab.label) {
+          <button
+            type="button"
+            class="filter"
+            [class.is-active]="activeCategory() === tab.slug"
+            [attr.aria-pressed]="activeCategory() === tab.slug"
+            (click)="selectCategory(tab.slug)"
+          >
+            {{ tab.label }} <span class="filter__count mono">{{ tab.count }}</span>
+          </button>
+        }
+      </div>
+      <label class="search">
+        <span class="visually-hidden">Hľadať v portfóliu</span>
+        <input
+          type="search"
+          class="input"
+          placeholder="Hľadať lokalitu, dron, klienta…"
+          [value]="search()"
+          (input)="onSearch($event)"
+        />
+      </label>
+    </div>
+
+    @switch (projects.status()) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <div class="skeleton skeleton--card"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Portfólio sa nepodarilo načítať.</strong>
+          Server je momentálne nedostupný.
+          <div><button type="button" class="btn btn--sm" (click)="projects.reload()">Skúsiť znova</button></div>
+        </div>
+      }
+      @default {
+        <p class="result-count mono" aria-live="polite">
+          Zobrazených projektov: {{ filtered().length }}
+        </p>
+        @if (filtered().length) {
+          <div class="grid grid--3">
+            @for (project of filtered(); track project.id; let i = $index) {
+              <app-aerial-project-card [project]="project" [loading]="i < 3 ? 'eager' : 'lazy'" />
+            }
+          </div>
+        } @else {
+          <div class="state-message">
+            <strong>Žiadny projekt nezodpovedá filtru.</strong>
+            Skúste inú kategóriu alebo hľadaný výraz.
+            <div><button type="button" class="btn btn--sm" (click)="resetFilters()"><app-icon name="close" /> Zrušiť filtre</button></div>
+          </div>
+        }
+      }
+    }
+  </div>
+</section>

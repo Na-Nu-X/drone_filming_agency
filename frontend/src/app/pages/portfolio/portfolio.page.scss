@@ -1,0 +1,80 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.toolbar {
+  display: grid;
+  gap: v.$space-4;
+  margin-bottom: v.$space-5;
+
+  @include m.up(lg) {
+    grid-template-columns: 1fr 320px;
+    align-items: center;
+  }
+}
+
+.filters {
+  display: flex;
+  gap: v.$space-2;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+
+  @include m.up(md) {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: v.$space-2;
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 v.$space-4;
+  border: var(--hairline-strong);
+  border-radius: v.$radius-pill;
+  background: transparent;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition:
+    color v.$duration-fast ease,
+    border-color v.$duration-fast ease,
+    background-color v.$duration-fast ease;
+
+  &:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent);
+  }
+
+  &.is-active {
+    color: #fff;
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+
+    .filter__count {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.filter__count {
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+}
+
+.search .input {
+  min-height: 42px;
+}
+
+.result-count {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  margin-bottom: v.$space-4;
+  letter-spacing: 0.06em;
+}
+
+.skeleton--card {
+  aspect-ratio: 4 / 3.6;
+}

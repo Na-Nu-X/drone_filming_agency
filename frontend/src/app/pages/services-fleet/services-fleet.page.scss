@@ -1,0 +1,267 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.jump-links {
+  display: flex;
+  gap: v.$space-2;
+  margin-top: v.$space-5;
+}
+
+.skeleton--service {
+  min-height: 320px;
+  margin-bottom: v.$space-5;
+}
+
+.skeleton--drone {
+  min-height: 420px;
+}
+
+// --- Services --------------------------------------------------------------------
+.service-list {
+  display: grid;
+  gap: v.$space-5;
+}
+
+.service {
+  display: grid;
+  gap: v.$space-6;
+  padding: v.$space-6 v.$space-5;
+  @include m.surface;
+  scroll-margin-top: calc(var(--nav-height) + #{v.$space-5});
+  transition: border-color v.$duration-base ease;
+
+  &:target {
+    border-color: var(--color-accent);
+  }
+
+  @include m.up(lg) {
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
+    gap: v.$space-8;
+    padding: v.$space-7;
+  }
+}
+
+.service__head {
+  display: flex;
+  align-items: center;
+  gap: v.$space-3;
+  margin-bottom: v.$space-5;
+}
+
+.service__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  font-size: 1.35rem;
+}
+
+.service__index {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.service__title {
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  max-width: 24ch;
+}
+
+.service__lead {
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.service__text {
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 64ch;
+}
+
+.service__specs {
+  display: grid;
+  gap: v.$space-5;
+  align-content: start;
+
+  @include m.up(lg) {
+    padding-left: v.$space-7;
+    border-left: var(--hairline);
+  }
+}
+
+.service__label {
+  @include m.eyebrow;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-accent);
+  margin-bottom: v.$space-3;
+}
+
+.check-list {
+  display: grid;
+  gap: v.$space-2;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: v.$space-2;
+    font-size: 0.92rem;
+
+    app-icon {
+      color: var(--color-emerald);
+      margin-top: 2px;
+    }
+  }
+}
+
+.service__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: v.$space-4;
+  margin: 0;
+  padding-block: v.$space-4;
+  border-block: var(--hairline);
+
+  dt {
+    @include m.eyebrow;
+    font-size: 0.64rem;
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: 4px 0 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+}
+
+// --- Fleet -----------------------------------------------------------------------------
+.fleet-section {
+  @include m.hud-grid(0.035, 64px);
+  background-color: var(--color-surface);
+}
+
+.fleet-grid {
+  display: grid;
+  gap: v.$space-5;
+
+  @include m.up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include m.up(lg) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+
+    > * {
+      grid-column: span 2;
+    }
+
+    > :nth-child(4),
+    > :nth-child(5) {
+      grid-column: span 3;
+    }
+  }
+}
+
+.drone {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  border: var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color v.$duration-base ease;
+
+  &:hover {
+    border-color: rgba(14, 165, 233, 0.45);
+
+    img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.drone__media {
+  position: relative;
+  @include m.aspect-16-9;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform v.$duration-slow v.$ease-out;
+  }
+}
+
+.drone__badge {
+  position: absolute;
+  top: v.$space-3;
+  left: v.$space-3;
+}
+
+.drone__body {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-4;
+  padding: v.$space-5;
+  flex: 1;
+}
+
+.drone__name {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.drone__specs {
+  display: grid;
+  gap: v.$space-3;
+  margin: 0;
+  padding-block: v.$space-4;
+  border-block: var(--hairline);
+
+  div {
+    display: grid;
+    gap: 2px;
+  }
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    @include m.eyebrow;
+    font-size: 0.62rem;
+    color: var(--color-text-muted);
+
+    app-icon {
+      color: var(--color-accent);
+      font-size: 0.95rem;
+    }
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+.flight-bar {
+  display: block;
+  height: 3px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: rgba(148, 163, 184, 0.18);
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-emerald));
+  }
+}
+
+.drone .tag-list {
+  margin-top: auto;
+}

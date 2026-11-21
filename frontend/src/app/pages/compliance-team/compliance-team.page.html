@@ -1,0 +1,143 @@
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Compliance & Piloti</p>
+    <h1>Bezpečnosť, legislatíva a tím</h1>
+    <p class="lead">
+      Profesionálne letecké natáčanie nie je len o kamere. Je to o povoleniach, poistení, skúsenostiach pilotov a
+      disciplíne pred každým vzletom. Takto to robíme my.
+    </p>
+    <div class="status-row">
+      <span class="badge badge--emerald"><span class="status-dot"></span> {{ site.compliance.operatorRegistration }}</span>
+      <span class="badge badge--accent">ID: {{ site.compliance.operatorId }}</span>
+      <span class="badge badge--emerald"><app-icon name="shield" /> Poistenie {{ site.compliance.insuranceCoverage }}</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGULATIONS ============ -->
+<section class="section" aria-labelledby="regulations-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Legislatíva</p>
+        <h2 id="regulations-title">Slovenské a európske pravidlá prehľadne</h2>
+      </div>
+      <p>{{ site.compliance.easaNote }}</p>
+    </header>
+
+    <div class="regulations">
+      @for (block of regulations; track block.title) {
+        <article class="regulation">
+          <div class="regulation__head">
+            <span class="regulation__icon"><app-icon [name]="block.icon" /></span>
+            <span class="regulation__code mono">{{ block.code }}</span>
+          </div>
+          <h3 class="regulation__title">{{ block.title }}</h3>
+          <p class="regulation__text">{{ block.text }}</p>
+          <ul role="list" class="regulation__points">
+            @for (point of block.points; track point) {
+              <li><app-icon name="check" /> {{ point }}</li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
+
+    <ol role="list" class="timeline" aria-label="Postup prípravy letu">
+      @for (step of safetySteps; track step.code) {
+        <li class="timeline__step">
+          <span class="timeline__code mono">{{ step.code }}</span>
+          <strong>{{ step.title }}</strong>
+          <span>{{ step.text }}</span>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- ============ PILOTS ============ -->
+<section class="section section--surface" aria-labelledby="team-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Tím</p>
+        <h2 id="team-title">Certifikovaní piloti a kameramani</h2>
+      </div>
+      <p>Za každým záberom je posádka s tisíckami letových hodín, platnými licenciami a citom pre filmový jazyk.</p>
+    </header>
+
+    @switch (pilots.status()) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton skeleton--pilot"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Tím sa nepodarilo načítať.</strong>
+          <button type="button" class="btn btn--sm" (click)="pilots.reload()">Skúsiť znova</button>
+        </div>
+      }
+      @default {
+        <div class="grid grid--3">
+          @for (pilot of pilots.data(); track pilot.id) {
+            <article class="pilot">
+              <div class="pilot__photo">
+                <img [src]="pilot.photo_url" [alt]="pilot.full_name" loading="lazy" decoding="async" width="800" height="1000" />
+              </div>
+              <div class="pilot__body">
+                <h3 class="pilot__name">{{ pilot.full_name }}</h3>
+                <p class="pilot__role">{{ pilot.role_title }}</p>
+                <p class="pilot__bio">{{ pilot.bio }}</p>
+                <ul role="list" class="pilot__certs">
+                  @for (cert of pilot.certifications.split(','); track $index) {
+                    <li>{{ cert.trim() }}</li>
+                  }
+                </ul>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" aria-labelledby="faq-title">
+  <div class="container faq-layout">
+    <header>
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-title">Časté otázky pred natáčaním</h2>
+      <p class="text-muted">Nenašli ste odpoveď? Zavolajte šéfpilotovi alebo nám pošlite dopyt – odpovieme do 24 hodín.</p>
+      <a routerLink="/dopyt" class="btn btn--primary">Overiť termín a cenu <app-icon name="arrow-right" /></a>
+    </header>
+
+    <div class="faq">
+      @for (item of faq; track item.question; let i = $index) {
+        <div class="faq__item" [class.is-open]="openFaq() === i">
+          <h3 class="faq__heading">
+            <button
+              type="button"
+              class="faq__trigger"
+              [id]="'faq-trigger-' + i"
+              [attr.aria-expanded]="openFaq() === i"
+              [attr.aria-controls]="'faq-panel-' + i"
+              (click)="toggleFaq(i)"
+            >
+              <span>{{ item.question }}</span>
+              <app-icon name="chevron-down" />
+            </button>
+          </h3>
+          <div class="faq__panel" [id]="'faq-panel-' + i" role="region" [attr.aria-labelledby]="'faq-trigger-' + i" [attr.inert]="openFaq() === i ? null : ''">
+            <div class="faq__inner">
+              <p>{{ item.answer }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

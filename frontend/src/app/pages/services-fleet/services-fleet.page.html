@@ -1,0 +1,160 @@
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Služby & Flotila dronov</p>
+    <h1>Správny dron pre každý záber</h1>
+    <p class="lead">
+      Kinematografické natáčanie, FPV prelety, realitné balíčky, termovízne inšpekcie a 3D mapovanie. Ku každej službe
+      prideľujeme platformu a posádku podľa prostredia, letovej zóny a požadovaného výstupu.
+    </p>
+    <nav class="jump-links" aria-label="Rýchla navigácia">
+      <a href="#sluzby" class="badge badge--accent">Služby</a>
+      <a href="#flotila" class="badge badge--accent">Naša flotila</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="sluzby" class="section" aria-labelledby="services-title">
+  <div class="container">
+    <h2 id="services-title" class="visually-hidden">Služby</h2>
+
+    @switch (services.status()) {
+      @case ('loading') {
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton skeleton--service"></div>
+        }
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Služby sa nepodarilo načítať.</strong>
+          <button type="button" class="btn btn--sm" (click)="services.reload()">Skúsiť znova</button>
+        </div>
+      }
+      @default {
+        <div class="service-list">
+          @for (service of services.data(); track service.id; let i = $index) {
+            <article class="service" [id]="service.slug">
+              <div class="service__intro">
+                <div class="service__head">
+                  <span class="service__icon"><app-icon [name]="toIconName(service.category.icon_name)" /></span>
+                  <span class="service__index mono">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}</span>
+                  @if (service.is_featured) {
+                    <span class="badge badge--accent">Najžiadanejšie</span>
+                  }
+                </div>
+                <h3 class="service__title">{{ service.title }}</h3>
+                <p class="service__lead">{{ service.short_description }}</p>
+                <p class="service__text">{{ service.detailed_description }}</p>
+              </div>
+
+              <div class="service__specs">
+                <div class="service__block">
+                  <h4 class="service__label">Zahrnuté výstupy</h4>
+                  <ul role="list" class="check-list">
+                    @for (item of service.included_deliverables; track item) {
+                      <li><app-icon name="check" /> {{ item }}</li>
+                    }
+                  </ul>
+                </div>
+                <div class="service__block">
+                  <h4 class="service__label">Použité drony</h4>
+                  <ul role="list" class="tag-list">
+                    @for (drone of service.drone_fleet_used; track drone) {
+                      <li>{{ drone }}</li>
+                    }
+                  </ul>
+                </div>
+                <dl class="service__meta">
+                  <div>
+                    <dt>Cena od</dt>
+                    <dd class="mono">{{ formatPrice(service.starting_price_eur) ?? 'Na dopyt' }}</dd>
+                  </div>
+                  <div>
+                    <dt>Bežné dodanie</dt>
+                    <dd class="mono">{{ service.typical_turnaround }}</dd>
+                  </div>
+                </dl>
+                <a routerLink="/dopyt" [queryParams]="quoteParams(service.category.slug)" class="btn btn--primary btn--block">
+                  Nezáväzná ponuka <app-icon name="arrow-right" />
+                </a>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- ============ FLEET ============ -->
+<section id="flotila" class="section section--surface fleet-section" aria-labelledby="fleet-title">
+  <div class="container">
+    <header class="section-header">
+      <div>
+        <p class="eyebrow">Hangár</p>
+        <h2 id="fleet-title">Naša flotila dronov</h2>
+      </div>
+      <p>
+        Každý stroj je pravidelne servisovaný, má vedený letový denník a záložné batérie. Na natáčanie prinášame vždy
+        aj záložný dron, aby počasie či technika nezastavili produkciu.
+      </p>
+    </header>
+
+    @switch (fleet.status()) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton skeleton--drone"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-message">
+          <strong>Flotilu sa nepodarilo načítať.</strong>
+          <button type="button" class="btn btn--sm" (click)="fleet.reload()">Skúsiť znova</button>
+        </div>
+      }
+      @default {
+        <div class="fleet-grid">
+          @for (drone of fleet.data(); track drone.id) {
+            <article class="drone">
+              <div class="drone__media">
+                <img [src]="drone.image_url" [alt]="drone.model_name" loading="lazy" decoding="async" width="1200" height="675" />
+                <span class="badge drone__badge" [class.badge--amber]="drone.category_label.includes('FPV')">
+                  {{ drone.category_label }}
+                </span>
+              </div>
+              <div class="drone__body">
+                <h3 class="drone__name">{{ drone.model_name }}</h3>
+                <dl class="drone__specs">
+                  <div>
+                    <dt><app-icon name="aperture" /> Kamera</dt>
+                    <dd>{{ drone.camera_sensor }}</dd>
+                  </div>
+                  <div>
+                    <dt><app-icon name="cinema" /> Max. rozlíšenie</dt>
+                    <dd class="mono">{{ drone.max_resolution_fps }}</dd>
+                  </div>
+                  <div>
+                    <dt><app-icon name="battery" /> Čas letu</dt>
+                    <dd class="mono">
+                      {{ drone.flight_time_min }} min
+                      <span class="flight-bar" aria-hidden="true">
+                        <span [style.width.%]="(drone.flight_time_min / 55) * 100"></span>
+                      </span>
+                    </dd>
+                  </div>
+                </dl>
+                <ul role="list" class="tag-list">
+                  @for (useCase of drone.key_use_cases; track useCase) {
+                    <li>{{ useCase }}</li>
+                  }
+                </ul>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>

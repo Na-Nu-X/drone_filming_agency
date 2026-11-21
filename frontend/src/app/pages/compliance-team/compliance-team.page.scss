@@ -1,0 +1,289 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$space-2;
+  margin-top: v.$space-5;
+
+  .badge {
+    white-space: normal;
+  }
+}
+
+// --- Regulations ----------------------------------------------------------------------
+.regulations {
+  display: grid;
+  gap: v.$space-5;
+
+  @include m.up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.regulation {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-3;
+  padding: v.$space-6 v.$space-5;
+  @include m.surface;
+
+  @include m.up(lg) {
+    padding: v.$space-6;
+  }
+}
+
+.regulation__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$space-3;
+  margin-bottom: v.$space-2;
+}
+
+.regulation__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  border: var(--hairline-strong);
+  color: var(--color-accent);
+  font-size: 1.3rem;
+}
+
+.regulation__code {
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+  text-align: right;
+}
+
+.regulation__title {
+  margin: 0;
+}
+
+.regulation__text {
+  color: var(--color-text-muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.regulation__points {
+  display: grid;
+  gap: v.$space-2;
+  margin-top: v.$space-2 !important;
+  padding-top: v.$space-4 !important;
+  border-top: var(--hairline);
+
+  li {
+    display: flex;
+    gap: v.$space-2;
+    font-size: 0.9rem;
+
+    app-icon {
+      color: var(--color-emerald);
+      margin-top: 2px;
+    }
+  }
+}
+
+.timeline {
+  display: grid;
+  margin-top: v.$space-7 !important;
+  border: var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  @include m.up(md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.timeline__step {
+  position: relative;
+  display: grid;
+  gap: v.$space-1;
+  padding: v.$space-5;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  border-bottom: var(--hairline);
+
+  @include m.up(md) {
+    border-bottom: 0;
+
+    & + & {
+      border-left: var(--hairline);
+    }
+  }
+
+  strong {
+    color: var(--color-text);
+    font-size: 1rem;
+  }
+}
+
+.timeline__code {
+  font-size: 0.78rem;
+  color: var(--color-amber);
+  letter-spacing: 0.08em;
+}
+
+// --- Pilots -----------------------------------------------------------------------------
+.skeleton--pilot {
+  min-height: 520px;
+}
+
+.pilot {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  border: var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.pilot__photo {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    filter: grayscale(0.35) contrast(1.05);
+    transition:
+      filter v.$duration-base ease,
+      transform v.$duration-slow v.$ease-out;
+  }
+
+  .pilot:hover & img {
+    filter: none;
+    transform: scale(1.04);
+  }
+}
+
+.pilot__body {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-2;
+  padding: v.$space-5;
+  flex: 1;
+}
+
+.pilot__name {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.pilot__role {
+  margin: 0;
+  @include m.eyebrow;
+  font-size: 0.68rem;
+  color: var(--color-accent);
+}
+
+.pilot__bio {
+  margin: v.$space-2 0 v.$space-3;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.pilot__certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto !important;
+
+  li {
+    @include m.telemetry;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: var(--color-emerald);
+    background: rgba(16, 185, 129, 0.06);
+  }
+}
+
+// --- FAQ --------------------------------------------------------------------------------
+.faq-layout {
+  display: grid;
+  gap: v.$space-6;
+
+  @include m.up(lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: v.$space-8;
+    align-items: start;
+
+    > header {
+      position: sticky;
+      top: calc(var(--nav-height) + #{v.$space-5});
+    }
+  }
+}
+
+.faq {
+  border-top: var(--hairline);
+}
+
+.faq__item {
+  border-bottom: var(--hairline);
+}
+
+.faq__heading {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.faq__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$space-4;
+  width: 100%;
+  padding: v.$space-5 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  font-weight: 500;
+  color: var(--color-text);
+  transition: color v.$duration-fast ease;
+
+  app-icon {
+    color: var(--color-accent);
+    transition: transform v.$duration-base v.$ease-out;
+  }
+
+  &:hover {
+    color: var(--color-accent);
+  }
+
+  .is-open & app-icon {
+    transform: rotate(180deg);
+  }
+}
+
+.faq__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows v.$duration-base v.$ease-out;
+
+  .is-open & {
+    grid-template-rows: 1fr;
+  }
+}
+
+.faq__inner {
+  overflow: hidden;
+
+  p {
+    margin: 0;
+    padding-bottom: v.$space-5;
+    color: var(--color-text-muted);
+    max-width: 68ch;
+  }
+}
